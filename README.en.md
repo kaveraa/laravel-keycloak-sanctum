@@ -54,7 +54,7 @@ Front-end                     Laravel API                         Keycloak
 
 ## Installation
 
-Requirements: PHP 8.2+, Laravel 11, 12 or 13, and Sanctum installed (`php artisan install:api`).
+Requirements: PHP 8.2+, Laravel 12 or 13, and Sanctum installed (`php artisan install:api`).
 
 ```bash
 composer require kaveraa/laravel-keycloak-sanctum
