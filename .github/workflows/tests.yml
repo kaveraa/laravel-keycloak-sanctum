@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependencies }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { php: '8.2', laravel: '11', testbench: '9', dependencies: lowest }
+          - { php: '8.2', laravel: '11', testbench: '9', dependencies: highest }
+          - { php: '8.3', laravel: '12', testbench: '10', dependencies: highest }
+          - { php: '8.4', laravel: '12', testbench: '10', dependencies: highest }
+          - { php: '8.3', laravel: '13', testbench: '11', dependencies: highest }
+          - { php: '8.4', laravel: '13', testbench: '11', dependencies: highest }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, openssl, pdo_sqlite
+          coverage: none
+
+      - name: Choose the Laravel version
+        run: composer require "laravel/framework:^${{ matrix.laravel }}.0" "orchestra/testbench:^${{ matrix.testbench }}.0" --no-update --no-interaction
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - run: vendor/bin/phpunit
+
+  # Contrôle unique exigé par la protection de la branche main :
+  # il ne passe que si tous les jobs de la matrice ont réussi.
+  tests-passed:
+    name: All tests passed
+    needs: tests
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.tests.result }}" = "success"

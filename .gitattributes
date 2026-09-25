@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+# Fichiers exclus de l'archive installée par Composer
+/.github            export-ignore
+/art                export-ignore
+/tests              export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
+/CONTRIBUTING.md    export-ignore
+/phpunit.xml.dist   export-ignore

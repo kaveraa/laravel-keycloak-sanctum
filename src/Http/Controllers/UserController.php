@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Kaveraa\KeycloakSanctum\Http\Controllers;
+
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Kaveraa\KeycloakSanctum\KeycloakSanctum;
+
+/**
+ * GET /sso/user : utilisateur connecté et ses rôles (jeton Sanctum requis).
+ */
+class UserController
+{
+    public function __invoke(Request $request): JsonResponse
+    {
+        return response()->json([
+            'user' => KeycloakSanctum::userPayload($request->user(), KeycloakSanctum::roles($request)),
+        ]);
+    }
+}
