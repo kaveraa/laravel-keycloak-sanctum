@@ -36,7 +36,7 @@ Les tests n'ont pas besoin d'un vrai Keycloak : `tests/Support/FakeKeycloak.php`
 
 - **Tests** : toute correction ou nouveauté est accompagnée d'un test.
 - **Sécurité** : toute donnée venant de Keycloak ou du front est vérifiée avant usage. En cas de doute, refusez.
-- **Documentation** : mettez à jour `README.md` (français) **et** `README.en.md` (anglais simple), ainsi que le `CHANGELOG.md` (section en haut, en français et en anglais).
+- **Documentation** : mettez à jour `README.md` (anglais simple) **et** `README.fr.md` (français), ainsi que le `CHANGELOG.md` (section en haut, en français et en anglais).
 - **Commits** : en anglais simple, compréhensible par un débutant. Phrases courtes, pas de jargon.
 - **Caractères** : uniquement des caractères du clavier dans les fichiers et les commits : `-` (pas de tiret long), `"` (pas de guillemets français), `->` (pas de flèche), pas d'emoji ni d'icône. Les lettres accentuées du français sont acceptées.
 
@@ -84,7 +84,7 @@ The tests do not need a real Keycloak: `tests/Support/FakeKeycloak.php` creates 
 
 - **Tests**: every fix or new feature comes with a test.
 - **Security**: every value that comes from Keycloak or from the front-end is checked before use. If in doubt, refuse.
-- **Documentation**: update `README.md` (French) **and** `README.en.md` (simple English), and the `CHANGELOG.md` (section at the top, in French and English).
+- **Documentation**: update `README.md` (simple English) **and** `README.fr.md` (French), and the `CHANGELOG.md` (section at the top, in French and English).
 - **Commits**: in simple English, easy to read for a beginner. Short sentences, no jargon.
 - **Characters**: only keyboard characters in files and commits: `-` (no long dash), `"` (no French quotes), `->` (no arrow), no emoji or icon. French accented letters are fine.
 
