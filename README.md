@@ -4,57 +4,57 @@
 
 [![Tests](https://github.com/kaveraa/laravel-keycloak-sanctum/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/laravel-keycloak-sanctum/actions/workflows/tests.yml)
 [![Packagist](https://img.shields.io/packagist/v/kaveraa/laravel-keycloak-sanctum.svg)](https://packagist.org/packages/kaveraa/laravel-keycloak-sanctum)
-[![Licence](https://img.shields.io/github/license/kaveraa/laravel-keycloak-sanctum.svg)](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/kaveraa/laravel-keycloak-sanctum.svg)](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/packagist/dt/kaveraa/laravel-keycloak-sanctum.svg)](https://packagist.org/packages/kaveraa/laravel-keycloak-sanctum)
 [![PHP](https://img.shields.io/packagist/dependency-v/kaveraa/laravel-keycloak-sanctum/php.svg)](https://packagist.org/packages/kaveraa/laravel-keycloak-sanctum)
 
-**Français** - [English](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/README.en.md)
+**English** - [Français](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/README.fr.md)
 
-Connexion **Keycloak (SSO)** pour une **application front (Vue, React, Angular...) avec une API Laravel**.
+**Keycloak login (SSO)** for a **front-end application (Vue, React, Angular...) with a Laravel API**.
 
-Après la connexion Keycloak, votre front reçoit un **jeton Sanctum** classique pour appeler votre API. Le paquet s'occupe du reste :
+After the Keycloak login, your front-end gets a normal **Sanctum token** to call your API. The package does the rest:
 
-- **Connexion sécurisée** : le jeton n'apparaît jamais dans une URL. Le front reçoit un code à usage unique (valable 60 secondes) et l'échange contre le jeton.
-- **Utilisateurs** : retrouvés ou créés à la connexion, avec leurs informations Keycloak (nom, e-mail...).
-- **Rôles** : lus dans le jeton Keycloak, traduits en rôles de votre application, avec un middleware `keycloak.role:admin`.
-- **Déconnexion depuis Keycloak** (back-channel logout) : quand la session se termine dans Keycloak, les jetons Sanctum sont supprimés.
-- **Déconnexion après inactivité** (facultative).
-- **Vérification des jetons** : signature, dates, émetteur, destinataire. Les clés de Keycloak sont gardées en cache et rechargées automatiquement quand Keycloak en change.
+- **Secure login**: the token is never in a URL. The front-end gets a one-time code (valid for 60 seconds) and exchanges it for the token.
+- **Users**: found or created at login, with their Keycloak information (name, email...).
+- **Roles**: read from the Keycloak token, changed into the roles of your application, with a `keycloak.role:admin` middleware.
+- **Logout from Keycloak** (back-channel logout): when the session ends in Keycloak, the Sanctum tokens are deleted.
+- **Logout after inactivity** (optional).
+- **Token checks**: signature, dates, issuer, audience. The Keycloak keys are cached and reloaded automatically when Keycloak changes them.
 
 ---
 
-## Sommaire
+## Contents
 
-- [Comment ça marche](#comment-ça-marche)
+- [How it works](#how-it-works)
 - [Installation](#installation)
-- [Configurer Keycloak](#configurer-keycloak)
-- [Côté front](#côté-front)
-- [Les routes](#les-routes)
-- [Les utilisateurs](#les-utilisateurs)
-- [Les rôles](#les-rôles)
-- [Déconnexion](#déconnexion)
-- [Personnaliser](#personnaliser)
-- [Événements](#événements)
-- [Sécurité](#sécurité)
-- [Développement](#développement)
+- [Configure Keycloak](#configure-keycloak)
+- [Front-end](#front-end)
+- [Routes](#routes)
+- [Users](#users)
+- [Roles](#roles)
+- [Logout](#logout)
+- [Customize](#customize)
+- [Events](#events)
+- [Security](#security)
+- [Development](#development)
 
-## Comment ça marche
+## How it works
 
 ```
-Front                         API Laravel                         Keycloak
+Front-end                     Laravel API                         Keycloak
   |                               |                                  |
-  | 1. ouvre /sso/login --------> | 2. redirige ---------------------> | l'utilisateur se connecte
-  |                               | <----------- 3. retour /sso/callback |
-  |                               | 4. vérifie le jeton, retrouve l'utilisateur, calcule ses rôles
-  | <---- 5. redirige vers le front avec ?code=...                   |
+  | 1. opens /sso/login --------> | 2. redirects --------------------> | the user logs in
+  |                               | <---------- 3. back to /sso/callback |
+  |                               | 4. checks the token, finds the user, computes the roles
+  | <---- 5. redirects to the front-end with ?code=...               |
   | 6. POST /sso/token {code} --> |                                  |
   | <---- 7. { token, user } ---- |                                  |
-  | 8. appels API avec "Authorization: Bearer <token>"               |
+  | 8. API calls with "Authorization: Bearer <token>"                |
 ```
 
 ## Installation
 
-Prérequis : PHP 8.2+, Laravel 12 ou 13, et Sanctum installé (`php artisan install:api`).
+Requirements: PHP 8.2+, Laravel 12 or 13, and Sanctum installed (`php artisan install:api`).
 
 ```bash
 composer require kaveraa/laravel-keycloak-sanctum
@@ -68,11 +68,11 @@ php artisan keycloak-sanctum:install
 php artisan migrate
 ```
 
-La commande `install` publie le fichier `config/keycloak-sanctum.php` et deux migrations :
-- `keycloak_sessions` : relie chaque jeton Sanctum à sa session Keycloak ;
-- `keycloak_id` sur la table `users` : identifiant Keycloak de l'utilisateur. Supprimez cette migration si vous identifiez vos utilisateurs par e-mail (voir [Les utilisateurs](#les-utilisateurs)).
+The `install` command publishes the `config/keycloak-sanctum.php` file and two migrations:
+- `keycloak_sessions`: links each Sanctum token to its Keycloak session;
+- `keycloak_id` on the `users` table: the Keycloak id of the user. Delete this migration if you find your users by email (see [Users](#users)).
 
-Ajoutez le trait Sanctum au modèle `User` :
+Add the Sanctum trait to the `User` model:
 
 ```php
 use Laravel\Sanctum\HasApiTokens;
@@ -83,62 +83,62 @@ class User extends Authenticatable
 }
 ```
 
-Puis renseignez `.env` :
+Then fill in `.env`:
 
 ```dotenv
 KEYCLOAK_BASE_URL=https://sso.example.org
-KEYCLOAK_REALM=mon-realm
-KEYCLOAK_CLIENT_ID=mon-application
-KEYCLOAK_CLIENT_SECRET=secret-du-client
+KEYCLOAK_REALM=my-realm
+KEYCLOAK_CLIENT_ID=my-application
+KEYCLOAK_CLIENT_SECRET=client-secret
 
-# Page du front qui reçoit ?code=... (adresse complète si le front est sur un autre domaine)
+# Front-end page that receives ?code=... (full address if the front-end is on another domain)
 KEYCLOAK_SANCTUM_FRONTEND_CALLBACK_URL=https://app.example.org/login/callback
-# Page affichée après la déconnexion
+# Page shown after logout
 KEYCLOAK_SANCTUM_POST_LOGOUT_REDIRECT_URI=https://app.example.org/
 ```
 
-Toutes les options, avec leur explication, sont dans [config/keycloak-sanctum.php](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/config/keycloak-sanctum.php).
+All the options, with explanations, are in [config/keycloak-sanctum.php](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/config/keycloak-sanctum.php) (comments in French).
 
-| Variable | Défaut | Rôle |
+| Variable | Default | Use |
 |---|---|---|
-| `KEYCLOAK_BASE_URL` | - | Adresse du serveur, sans `/realms` (ajoutez `/auth` pour Keycloak < 17) |
-| `KEYCLOAK_REALM` | - | Nom du realm |
-| `KEYCLOAK_CLIENT_ID` / `KEYCLOAK_CLIENT_SECRET` | - | Client Keycloak de l'application |
-| `KEYCLOAK_REDIRECT_URI` | `{APP_URL}/sso/callback` | Adresse de retour après la connexion |
-| `KEYCLOAK_SANCTUM_FRONTEND_CALLBACK_URL` | `/login/callback` | Page du front qui reçoit le code |
-| `KEYCLOAK_SANCTUM_POST_LOGOUT_REDIRECT_URI` | `/` | Page affichée après la déconnexion |
-| `KEYCLOAK_SANCTUM_AUTO_CREATE_USERS` | `false` | Créer l'utilisateur à sa première connexion |
-| `KEYCLOAK_SANCTUM_DEFAULT_ROLE` | - | Rôle donné à un utilisateur sans rôle |
-| `KEYCLOAK_SANCTUM_SYNC_ROLES` | `true` | Enregistrer les rôles sur l'utilisateur (voir [Les rôles](#les-rôles)) |
-| `KEYCLOAK_SANCTUM_TOKEN_EXPIRATION` | - | Durée de vie maximale du jeton, en minutes |
-| `KEYCLOAK_SANCTUM_IDLE_TIMEOUT` | - | Déconnexion après X minutes sans requête |
+| `KEYCLOAK_BASE_URL` | - | Server address, without `/realms` (add `/auth` for Keycloak < 17) |
+| `KEYCLOAK_REALM` | - | Realm name |
+| `KEYCLOAK_CLIENT_ID` / `KEYCLOAK_CLIENT_SECRET` | - | Keycloak client of the application |
+| `KEYCLOAK_REDIRECT_URI` | `{APP_URL}/sso/callback` | Return address after login |
+| `KEYCLOAK_SANCTUM_FRONTEND_CALLBACK_URL` | `/login/callback` | Front-end page that receives the code |
+| `KEYCLOAK_SANCTUM_POST_LOGOUT_REDIRECT_URI` | `/` | Page shown after logout |
+| `KEYCLOAK_SANCTUM_AUTO_CREATE_USERS` | `false` | Create the user at the first login |
+| `KEYCLOAK_SANCTUM_DEFAULT_ROLE` | - | Role given to a user with no role |
+| `KEYCLOAK_SANCTUM_SYNC_ROLES` | `true` | Save the roles on the user (see [Roles](#roles)) |
+| `KEYCLOAK_SANCTUM_TOKEN_EXPIRATION` | - | Maximum token lifetime, in minutes |
+| `KEYCLOAK_SANCTUM_IDLE_TIMEOUT` | - | Logout after X minutes with no request |
 
-## Configurer Keycloak
+## Configure Keycloak
 
-Dans la console d'administration Keycloak, créez (ou ouvrez) le client de votre application :
+In the Keycloak admin console, create (or open) the client of your application:
 
-| Réglage | Valeur |
+| Setting | Value |
 |---|---|
-| Client authentication | **On** (client confidentiel, avec un secret) |
+| Client authentication | **On** (confidential client, with a secret) |
 | Standard flow | **On** |
 | Valid redirect URIs | `https://api.example.org/sso/callback` |
 | Valid post logout redirect URIs | `https://app.example.org/*` |
 | Backchannel logout URL | `https://api.example.org/sso/backchannel-logout` |
 | Backchannel logout session required | **On** |
 
-La commande `php artisan keycloak-sanctum:install` affiche les adresses exactes de votre application.
+The `php artisan keycloak-sanctum:install` command shows the exact addresses of your application.
 
-## Côté front
+## Front-end
 
-Exemple en JavaScript, sans dépendance. Il s'adapte à Vue, React ou Angular.
+Example in JavaScript, with no dependency. It works with Vue, React or Angular.
 
-**1. Bouton de connexion** : ouvrir la route de connexion de l'API.
+**1. Login button**: open the login route of the API.
 
 ```js
 window.location.href = 'https://api.example.org/sso/login'
 ```
 
-**2. Page `/login/callback`** : échanger le code contre le jeton.
+**2. `/login/callback` page**: exchange the code for the token.
 
 ```js
 const params = new URLSearchParams(window.location.search)
@@ -154,11 +154,11 @@ if (params.has('error')) {
   })
   const { token, user } = await response.json()
   localStorage.setItem('token', token)
-  // user contient les informations de l'utilisateur et ses rôles : user.roles
+  // user contains the user information and the roles: user.roles
 }
 ```
 
-**3. Appels à l'API** : envoyer le jeton.
+**3. API calls**: send the token.
 
 ```js
 fetch('https://api.example.org/api/projects', {
@@ -166,7 +166,7 @@ fetch('https://api.example.org/api/projects', {
 })
 ```
 
-**4. Déconnexion** : supprimer le jeton, puis fermer la session Keycloak.
+**4. Logout**: delete the token, then close the Keycloak session.
 
 ```js
 const response = await fetch('https://api.example.org/sso/logout', {
@@ -178,71 +178,71 @@ localStorage.removeItem('token')
 window.location.href = logout_url ?? '/'
 ```
 
-Si l'API répond `401`, le jeton n'est plus valable (déconnexion depuis Keycloak, inactivité, expiration) : renvoyez l'utilisateur vers la connexion.
+If the API answers `401`, the token is not valid any more (logout from Keycloak, inactivity, expiration): send the user back to the login.
 
-## Les routes
+## Routes
 
-Toutes les routes sont sous le préfixe `/sso` (option `routes.prefix`).
+All routes use the `/sso` prefix (`routes.prefix` option).
 
-| Méthode | Adresse | Accès | Rôle |
+| Method | Address | Access | Use |
 |---|---|---|---|
-| GET | `/sso/login` | public | Redirige vers la page de connexion Keycloak |
-| GET | `/sso/callback` | Keycloak | Retour de Keycloak, redirige vers le front avec `?code=` ou `?error=` |
-| POST | `/sso/token` | public | Échange le code contre `{ token, token_type, expires_at, user }` |
-| GET | `/sso/user` | jeton | Utilisateur connecté et ses rôles |
-| POST | `/sso/logout` | jeton | Supprime le jeton, retourne `{ logout_url }` |
-| POST | `/sso/backchannel-logout` | Keycloak | Fin de session envoyée par Keycloak |
-| GET | `/sso/settings` | public | `{ login_url, idle_timeout }` pour le front |
+| GET | `/sso/login` | public | Redirects to the Keycloak login page |
+| GET | `/sso/callback` | Keycloak | Return from Keycloak, redirects to the front-end with `?code=` or `?error=` |
+| POST | `/sso/token` | public | Exchanges the code for `{ token, token_type, expires_at, user }` |
+| GET | `/sso/user` | token | Logged-in user and roles |
+| POST | `/sso/logout` | token | Deletes the token, returns `{ logout_url }` |
+| POST | `/sso/backchannel-logout` | Keycloak | End of session sent by Keycloak |
+| GET | `/sso/settings` | public | `{ login_url, idle_timeout }` for the front-end |
 
-Pour déclarer vos propres routes, désactivez celles du paquet (`routes.enabled => false`) et copiez [routes/keycloak-sanctum.php](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/routes/keycloak-sanctum.php).
+To declare your own routes, turn off the routes of the package (`routes.enabled => false`) and copy [routes/keycloak-sanctum.php](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/routes/keycloak-sanctum.php).
 
-## Les utilisateurs
+## Users
 
-À chaque connexion, l'utilisateur est retrouvé grâce à une colonne de la table `users` et à une information (claim) de Keycloak :
+At each login, the user is found with a column of the `users` table and a Keycloak value (claim):
 
 ```php
 // config/keycloak-sanctum.php
 'users' => [
-    'identifier' => ['column' => 'keycloak_id', 'claim' => 'sub'], // par défaut : identifiant Keycloak
-    // 'identifier' => ['column' => 'email', 'claim' => 'email'],  // ou par e-mail
+    'identifier' => ['column' => 'keycloak_id', 'claim' => 'sub'], // default: Keycloak id
+    // 'identifier' => ['column' => 'email', 'claim' => 'email'],  // or by email
     'auto_create' => env('KEYCLOAK_SANCTUM_AUTO_CREATE_USERS', false),
-    'attributes' => [          // colonnes mises à jour à chaque connexion => claim Keycloak
+    'attributes' => [          // columns updated at each login => Keycloak claim
         'name' => 'name',
         'email' => 'email',
     ],
 ],
 ```
 
-- Si l'utilisateur n'existe pas et que `auto_create` vaut `false`, la connexion est refusée (`?error=user_not_found`).
-- Les claims disponibles sont ceux du jeton Keycloak et de son profil : `sub`, `email`, `name`, `given_name`, `family_name`, `preferred_username`, et vos attributs personnalisés.
+- If the user does not exist and `auto_create` is `false`, the login is refused (`?error=user_not_found`).
+- The available claims come from the Keycloak token and profile: `sub`, `email`, `name`, `given_name`, `family_name`, `preferred_username`, and your custom attributes.
 
-## Les rôles
+## Roles
 
-Les rôles sont lus dans le jeton Keycloak, puis traduits en rôles de l'application :
+The roles are read from the Keycloak token, then changed into roles of the application:
 
 ```php
 'roles' => [
-    'source' => 'client',   // 'client' (rôles du client), 'realm' (rôles du realm) ou 'both'
-    'map' => [              // rôle Keycloak => rôle de l'application
+    'source' => 'client',   // 'client' (client roles), 'realm' (realm roles) or 'both'
+    'map' => [              // Keycloak role => application role
         'app-admin' => 'admin',
         'app-editor' => 'editor',
     ],
-    'default' => null,      // rôle donné à un utilisateur sans rôle
-    'required' => false,    // refuser la connexion sans rôle (?error=no_role)
+    'default' => null,      // role given to a user with no role
+    'required' => false,    // refuse the login with no role (?error=no_role)
 ],
 ```
 
-Si `map` est vide, les rôles Keycloak sont gardés tels quels. Sinon, seuls les rôles listés sont gardés.
+If `map` is empty, the Keycloak roles are kept as they are. If not, only the roles in the list are kept.
 
-**Protéger des routes :**
+**Protect routes:**
 
 ```php
 Route::middleware(['auth:sanctum', 'keycloak.role:admin,editor'])->group(function () {
-    // accessible avec le rôle admin OU editor
+    // allowed with the admin OR editor role
 });
 ```
 
-**Lire les rôles dans le code :**
+**Read the roles in the code:**
 
 ```php
 use Kaveraa\KeycloakSanctum\KeycloakSanctum;
@@ -251,7 +251,7 @@ KeycloakSanctum::roles();               // ['admin', 'editor']
 KeycloakSanctum::hasAnyRole('admin');   // true
 ```
 
-**Enregistrer les rôles sur l'utilisateur** (table de rôles, paquet de permissions...) : implémentez `SyncsKeycloakRoles` sur le modèle `User`. La méthode est appelée à chaque connexion.
+**Save the roles on the user** (roles table, permissions package...): implement `SyncsKeycloakRoles` on the `User` model. The method is called at each login.
 
 ```php
 use Kaveraa\KeycloakSanctum\Contracts\SyncsKeycloakRoles;
@@ -260,63 +260,63 @@ class User extends Authenticatable implements SyncsKeycloakRoles
 {
     public function syncKeycloakRoles(array $roles): void
     {
-        $this->syncRoles($roles); // par exemple avec spatie/laravel-permission
+        $this->syncRoles($roles); // for example with spatie/laravel-permission
     }
 }
 ```
 
-## Déconnexion
+## Logout
 
-- **Depuis le front** : `POST /sso/logout` supprime le jeton et retourne l'adresse de déconnexion Keycloak (voir [Côté front](#côté-front)).
-- **Depuis Keycloak** : quand la session se termine dans Keycloak (déconnexion d'une autre application, action d'un administrateur, fin de session), Keycloak appelle `/sso/backchannel-logout` et les jetons de la session sont supprimés.
-- **Après inactivité** : avec `KEYCLOAK_SANCTUM_IDLE_TIMEOUT=30`, un jeton inutilisé depuis 30 minutes est refusé. Chaque requête repousse le délai. Seuls les jetons créés par ce paquet sont concernés.
-- **Durée maximale** : avec `KEYCLOAK_SANCTUM_TOKEN_EXPIRATION=480`, le jeton expire 8 heures après la connexion, même en cas d'activité.
+- **From the front-end**: `POST /sso/logout` deletes the token and returns the Keycloak logout address (see [Front-end](#front-end)).
+- **From Keycloak**: when the session ends in Keycloak (logout from another application, admin action, end of session), Keycloak calls `/sso/backchannel-logout` and the tokens of the session are deleted.
+- **After inactivity**: with `KEYCLOAK_SANCTUM_IDLE_TIMEOUT=30`, a token not used for 30 minutes is refused. Each request resets the delay. Only the tokens created by this package are affected.
+- **Maximum lifetime**: with `KEYCLOAK_SANCTUM_TOKEN_EXPIRATION=480`, the token expires 8 hours after login, even with activity.
 
-> **Attention :** l'option d'inactivité utilise `Sanctum::authenticateAccessTokensUsing()`. Si votre application utilise déjà cette fonction, laissez l'option vide et appelez votre propre logique.
+> **Warning:** the inactivity option uses `Sanctum::authenticateAccessTokensUsing()`. If your application already uses this function, leave the option empty and call your own logic.
 
-## Personnaliser
+## Customize
 
-À placer dans le `boot()` d'un ServiceProvider de l'application :
+Put this in the `boot()` method of a service provider of the application:
 
 ```php
 use Kaveraa\KeycloakSanctum\KeycloakSanctum;
 
-// Retrouver l'utilisateur à votre façon (retourner null refuse la connexion)
+// Find the user your way (returning null refuses the login)
 KeycloakSanctum::resolveUsersUsing(function (array $claims) {
     return User::firstWhere('email', $claims['email']);
 });
 
-// Calculer les rôles à votre façon
+// Compute the roles your way
 KeycloakSanctum::mapRolesUsing(function (array $keycloakRoles, array $claims) {
     return in_array('super-user', $keycloakRoles) ? ['admin'] : ['reader'];
 });
 
-// Choisir les données de l'utilisateur envoyées au front (routes /sso/token et /sso/user)
+// Choose the user data sent to the front-end (/sso/token and /sso/user routes)
 KeycloakSanctum::userPayloadUsing(function ($user, array $roles) {
     return ['id' => $user->id, 'name' => $user->name, 'roles' => $roles];
 });
 ```
 
-Par défaut, l'utilisateur est envoyé avec `$user->toArray()` (les champs de `$hidden` sont masqués) et ses rôles.
+By default, the user is sent with `$user->toArray()` (the `$hidden` fields are not sent) and the roles.
 
-## Événements
+## Events
 
-| Événement | Quand | Données |
+| Event | When | Data |
 |---|---|---|
-| `Kaveraa\KeycloakSanctum\Events\KeycloakLogin` | Après une connexion réussie | `$user`, `$roles`, `$claims` |
-| `Kaveraa\KeycloakSanctum\Events\KeycloakLogout` | Après une fin de session envoyée par Keycloak | `$sid`, `$sub`, `$revokedTokens` |
+| `Kaveraa\KeycloakSanctum\Events\KeycloakLogin` | After a successful login | `$user`, `$roles`, `$claims` |
+| `Kaveraa\KeycloakSanctum\Events\KeycloakLogout` | After an end of session sent by Keycloak | `$sid`, `$sub`, `$revokedTokens` |
 
-## Sécurité
+## Security
 
-- Les jetons Keycloak sont vérifiés à chaque étape : signature (clés publiques du realm), dates (avec 30 secondes de tolérance), émetteur, et client destinataire.
-- Les fins de session envoyées par Keycloak suivent la norme OpenID Connect Back-Channel Logout 1.0 : destinataire, événement, absence de `nonce`, et protection contre le rejeu.
-- Le code d'échange est à usage unique, valable 60 secondes, et seule son empreinte est stockée.
-- L'`id_token` (utilisé pour la déconnexion Keycloak) est chiffré en base avec la clé de l'application.
-- Les clés de Keycloak sont rechargées au plus une fois par minute : de faux jetons ne peuvent pas faire interroger Keycloak en boucle.
+- The Keycloak tokens are checked at each step: signature (public keys of the realm), dates (with 30 seconds of tolerance), issuer and target client.
+- The ends of session sent by Keycloak follow the OpenID Connect Back-Channel Logout 1.0 standard: audience, event, no `nonce`, and replay protection.
+- The exchange code can be used only once, is valid for 60 seconds, and only its hash is stored.
+- The `id_token` (used for the Keycloak logout) is encrypted in the database with the application key.
+- The Keycloak keys are reloaded at most once per minute: fake tokens cannot make the package call Keycloak again and again.
 
-Pour signaler une faille, ouvrez une [alerte de sécurité privée](https://github.com/kaveraa/laravel-keycloak-sanctum/security/advisories/new) plutôt qu'une issue publique.
+To report a security problem, open a [private security advisory](https://github.com/kaveraa/laravel-keycloak-sanctum/security/advisories/new), not a public issue.
 
-## Développement
+## Development
 
 ```bash
 git clone https://github.com/kaveraa/laravel-keycloak-sanctum.git
@@ -325,10 +325,10 @@ composer install
 composer test
 ```
 
-Les tests utilisent un faux serveur Keycloak : de vraies clés RSA et de vrais jetons signés, sans serveur à installer.
+The tests use a fake Keycloak server: real RSA keys and real signed tokens, with no server to install.
 
-Pour proposer une modification, lisez le guide [CONTRIBUTING.md](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/CONTRIBUTING.md). Voir le [CHANGELOG](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/CHANGELOG.md) pour l'historique des versions.
+To propose a change, read the [CONTRIBUTING.md](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/CONTRIBUTING.md) guide. See the [CHANGELOG](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/CHANGELOG.md) for the list of versions.
 
-## Licence
+## License
 
-MIT. Voir [LICENSE](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/LICENSE).
+MIT. See [LICENSE](https://github.com/kaveraa/laravel-keycloak-sanctum/blob/main/LICENSE).
