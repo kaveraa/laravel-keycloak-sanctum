@@ -4,6 +4,13 @@
 
 **EN** All important changes of the package are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/).
 
+## [1.0.2] - 2026-09-29
+
+### Documentation
+
+- **FR** La description du paquet dans `composer.json` est maintenant en anglais.
+  **EN** The package description in `composer.json` is now in English.
+
 ## [1.0.1] - 2026-09-29
 
 ### Documentation
@@ -28,5 +35,6 @@
 - **FR** Commande `keycloak-sanctum:install`, événements `KeycloakLogin` et `KeycloakLogout`, points de personnalisation.
   **EN** `keycloak-sanctum:install` command, `KeycloakLogin` and `KeycloakLogout` events, customization hooks.
 
+[1.0.2]: https://github.com/kaveraa/laravel-keycloak-sanctum/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kaveraa/laravel-keycloak-sanctum/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kaveraa/laravel-keycloak-sanctum/releases/tag/v1.0.0

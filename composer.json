@@ -1,6 +1,6 @@
 {
     "name": "kaveraa/laravel-keycloak-sanctum",
-    "description": "Connexion Keycloak (SSO) pour une SPA avec une API Laravel : jeton Sanctum, rôles, déconnexion depuis Keycloak (back-channel logout) et après inactivité.",
+    "description": "Keycloak login (SSO) for a front-end with a Laravel API: Sanctum token, roles, back-channel logout and idle timeout",
     "type": "library",
     "license": "MIT",
     "keywords": [
