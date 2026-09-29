@@ -4,6 +4,13 @@
 
 **EN** All important changes of the package are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/).
 
+## [1.0.1] - 2026-09-29
+
+### Documentation
+
+- **FR** Le README affiché par défaut est maintenant en anglais (`README.md`), le français est dans `README.fr.md`.
+  **EN** The default README is now in English (`README.md`), the French version is in `README.fr.md`.
+
 ## [1.0.0] - 2026-09-25
 
 ### Ajouté / Added
@@ -21,4 +28,5 @@
 - **FR** Commande `keycloak-sanctum:install`, événements `KeycloakLogin` et `KeycloakLogout`, points de personnalisation.
   **EN** `keycloak-sanctum:install` command, `KeycloakLogin` and `KeycloakLogout` events, customization hooks.
 
+[1.0.1]: https://github.com/kaveraa/laravel-keycloak-sanctum/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kaveraa/laravel-keycloak-sanctum/releases/tag/v1.0.0
