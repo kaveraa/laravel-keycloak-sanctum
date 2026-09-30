@@ -1,6 +1,6 @@
 # Laravel Keycloak Sanctum
 
-<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/laravel-keycloak-sanctum/main/art/banner.svg" alt="Laravel Keycloak Sanctum" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/kaveraa/laravel-keycloak-sanctum/df35140/art/banner.svg" alt="Laravel Keycloak Sanctum" width="100%"></p>
 
 [![Tests](https://github.com/kaveraa/laravel-keycloak-sanctum/actions/workflows/tests.yml/badge.svg)](https://github.com/kaveraa/laravel-keycloak-sanctum/actions/workflows/tests.yml)
 [![Packagist](https://img.shields.io/packagist/v/kaveraa/laravel-keycloak-sanctum.svg)](https://packagist.org/packages/kaveraa/laravel-keycloak-sanctum)
