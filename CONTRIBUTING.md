@@ -95,3 +95,10 @@ Push your branch, open a PR to `main` and fill in the checklist. The PR can be m
 ### Release a version (maintainer)
 
 After the merge: update the `CHANGELOG.md`, then create a `vX.Y.Z` tag on `main`. Packagist publishes the version automatically.
+
+## Change the banner
+
+The README files load `art/banner.svg` through a URL that names a commit, not the `main` branch. Packagist serves README images through a CDN that caches a branch URL for a year, so a new banner would never show there. When you change the banner:
+
+1. Commit the new `art/banner.svg`.
+2. Put that commit in the image URL of `README.md` and `README.fr.md`, in a second commit.
