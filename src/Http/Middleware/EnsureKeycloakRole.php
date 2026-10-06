@@ -10,7 +10,7 @@ use Kaveraa\KeycloakSanctum\KeycloakSanctum;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Autorise la route seulement si l'utilisateur a au moins un des rôles donnés.
+ * Allows the route only if the user has at least one of the given roles.
  *
  *     Route::middleware(['auth:sanctum', 'keycloak.role:admin,editor'])->group(...);
  */

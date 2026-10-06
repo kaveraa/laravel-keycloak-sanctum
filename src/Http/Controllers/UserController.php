@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Kaveraa\KeycloakSanctum\KeycloakSanctum;
 
 /**
- * GET /sso/user : utilisateur connecté et ses rôles (jeton Sanctum requis).
+ * GET /sso/user: logged-in user and the roles (Sanctum token required).
  */
 class UserController
 {

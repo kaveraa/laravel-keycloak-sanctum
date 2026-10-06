@@ -7,7 +7,7 @@ namespace Kaveraa\KeycloakSanctum\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 
 /**
- * GET /sso/settings : informations utiles au front (adresse de connexion, délai d'inactivité).
+ * GET /sso/settings: useful information for the frontend (login address, idle timeout).
  */
 class SettingsController
 {

@@ -7,13 +7,13 @@ namespace Kaveraa\KeycloakSanctum\Events;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Un utilisateur vient de se connecter avec Keycloak (avant l'échange du code contre le jeton).
+ * A user has just logged in with Keycloak (before the code is exchanged for the token).
  */
 final class KeycloakLogin
 {
     /**
-     * @param list<string>         $roles  rôles de l'application
-     * @param array<string, mixed> $claims informations Keycloak
+     * @param list<string>         $roles  application roles
+     * @param array<string, mixed> $claims Keycloak information
      */
     public function __construct(
         public readonly Model $user,

@@ -61,7 +61,7 @@ final class LoginFlowTest extends TestCase
 
         Event::assertDispatched(KeycloakLogin::class, fn (KeycloakLogin $e) => $e->user->is($user) && $e->roles === ['admin']);
 
-        // Le jeton donne accès à l'API
+        // The token gives access to the API
         $this->withToken($response->json('token'))
             ->getJson('/sso/user')
             ->assertOk()

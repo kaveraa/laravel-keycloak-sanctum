@@ -9,8 +9,8 @@ use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Faux serveur Keycloak pour les tests : vraies clés RSA, vrais jetons signés,
- * configuration OpenID et clés publiques servies via Http::fake().
+ * Fake Keycloak server for the tests: real RSA keys, real signed tokens,
+ * OpenID configuration and public keys served through Http::fake().
  */
 final class FakeKeycloak
 {
@@ -26,7 +26,7 @@ final class FakeKeycloak
     private static array $keys = [];
 
     /**
-     * Clé privée RSA pour un identifiant de clé (kid), générée une fois par test.
+     * RSA private key for a key id (kid), generated once per test.
      */
     public static function privateKey(string $kid = 'key-1'): \OpenSSLAsymmetricKey
     {
@@ -35,7 +35,7 @@ final class FakeKeycloak
     }
 
     /**
-     * Sous Windows, OpenSSL a besoin du chemin de openssl.cnf (livré avec PHP dans extras/ssl).
+     * On Windows, OpenSSL needs the path of openssl.cnf (shipped with PHP in extras/ssl).
      *
      * @return array{config?: string}
      */
@@ -51,7 +51,7 @@ final class FakeKeycloak
     }
 
     /**
-     * Clés publiques au format JWKS, comme les publie Keycloak (avec une clé de chiffrement à ignorer).
+     * Public keys in JWKS format, as Keycloak publishes them (with an encryption key to ignore).
      *
      * @param list<string> $kids
      *
@@ -78,21 +78,21 @@ final class FakeKeycloak
     }
 
     /**
-     * Sert la configuration OpenID et les clés publiques.
-     * Chaque appel à jwks_uri retourne l'élément suivant de $jwksSequence (rotation de clés).
+     * Serves the OpenID configuration and the public keys.
+     * Each call to jwks_uri returns the next item of $jwksSequence (key rotation).
      *
      * @param list<list<string>> $jwksSequence
      */
     public static function fake(array $jwksSequence = [['key-1']]): void
     {
-        // Repart d'une simulation vierge : les Http::fake() successifs s'additionnent
+        // Starts from a clean fake: successive Http::fake() calls add up
         Http::swap(new Factory());
 
         $sequence = Http::sequence();
         foreach ($jwksSequence as $kids) {
             $sequence->push(self::jwks($kids));
         }
-        // Une fois la séquence terminée, Keycloak continue de servir les dernières clés
+        // Once the sequence is over, Keycloak keeps serving the last keys
         $sequence->whenEmpty(Http::response(self::jwks(end($jwksSequence))));
 
         Http::fake([
@@ -106,7 +106,7 @@ final class FakeKeycloak
     }
 
     /**
-     * Keycloak ne répond plus.
+     * Keycloak no longer answers.
      */
     public static function down(): void
     {
@@ -115,7 +115,7 @@ final class FakeKeycloak
     }
 
     /**
-     * Jeton d'accès signé, avec des valeurs réalistes remplaçables par $claims.
+     * Signed access token, with realistic values that $claims can override.
      *
      * @param array<string, mixed> $claims
      */
@@ -138,7 +138,7 @@ final class FakeKeycloak
     }
 
     /**
-     * Logout token de back-channel logout signé.
+     * Signed back-channel logout token.
      *
      * @param array<string, mixed> $claims
      */

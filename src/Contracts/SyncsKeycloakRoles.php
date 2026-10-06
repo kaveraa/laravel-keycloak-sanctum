@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Kaveraa\KeycloakSanctum\Contracts;
 
 /**
- * À implémenter sur le modèle User pour enregistrer les rôles à chaque connexion
- * (table de rôles, colonne role, paquet de permissions...).
+ * Implement this on the User model to save the roles on every login
+ * (roles table, role column, permissions package...).
  */
 interface SyncsKeycloakRoles
 {
     /**
-     * @param list<string> $roles rôles de l'application (après transformation)
+     * @param list<string> $roles application roles (after mapping)
      */
     public function syncKeycloakRoles(array $roles): void;
 }

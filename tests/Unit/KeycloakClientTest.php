@@ -49,7 +49,7 @@ final class KeycloakClientTest extends TestCase
 
     public function test_refuse_une_signature_invalide(): void
     {
-        // Jeton signé par une autre clé mais qui annonce le kid de la clé connue
+        // Token signed with another key but announcing the kid of the known key
         $forged = FakeKeycloak::accessToken([], 'pirate');
         [, $payload, $signature] = explode('.', $forged);
         $header = explode('.', FakeKeycloak::accessToken())[0];
@@ -68,7 +68,7 @@ final class KeycloakClientTest extends TestCase
         $claims = $client->verify(FakeKeycloak::accessToken(['sub' => 'rotated'], 'key-2'));
 
         self::assertSame('rotated', $claims['sub']);
-        Http::assertSentCount(3); // configuration + 2 lectures des clés
+        Http::assertSentCount(3); // configuration + 2 reads of the keys
     }
 
     public function test_des_faux_jetons_ne_font_pas_interroger_keycloak_en_boucle(): void
@@ -83,7 +83,7 @@ final class KeycloakClientTest extends TestCase
             }
         }
 
-        Http::assertSentCount(3); // configuration + clés + un seul rechargement
+        Http::assertSentCount(3); // configuration + keys + a single reload
     }
 
     public function test_les_cles_sont_gardees_en_cache(): void
@@ -93,7 +93,7 @@ final class KeycloakClientTest extends TestCase
         $client->verify(FakeKeycloak::accessToken());
         $client->verify(FakeKeycloak::accessToken());
 
-        Http::assertSentCount(2); // configuration + clés, une seule fois
+        Http::assertSentCount(2); // configuration + keys, only once
     }
 
     public function test_adresse_de_deconnexion(): void

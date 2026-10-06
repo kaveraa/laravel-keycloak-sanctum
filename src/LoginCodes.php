@@ -8,8 +8,8 @@ use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Support\Str;
 
 /**
- * Codes à usage unique transmis au front après la connexion Keycloak.
- * Le front échange le code contre un jeton Sanctum : le jeton n'apparaît jamais dans une URL.
+ * One-time codes sent to the frontend after the Keycloak login.
+ * The frontend exchanges the code for a Sanctum token: the token never appears in a URL.
  */
 class LoginCodes
 {
@@ -31,9 +31,9 @@ class LoginCodes
     }
 
     /**
-     * Retourne les données du code et le supprime (un code ne sert qu'une fois).
+     * Returns the data of the code and deletes it (a code is used only once).
      *
-     * @return array<string, mixed>|null null si le code est inconnu, déjà utilisé ou expiré
+     * @return array<string, mixed>|null null if the code is unknown, already used or expired
      */
     public function consume(string $code): ?array
     {
@@ -44,7 +44,7 @@ class LoginCodes
 
     private function key(string $code): string
     {
-        // Seule une empreinte du code est stockée
+        // Only a hash of the code is stored
         return 'keycloak-sanctum:code:'.hash('sha256', $code);
     }
 }

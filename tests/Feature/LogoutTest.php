@@ -63,7 +63,7 @@ final class LogoutTest extends TestCase
         $this->loginWithKeycloak(['sid' => 'session-2'])->assertOk();
 
         $logoutToken = FakeKeycloak::logoutToken(['sid' => null]);
-        // sid absent : Keycloak demande la fin de toutes les sessions de l'utilisateur (sub)
+        // No sid: Keycloak asks to end all the sessions of the user (sub)
         $claims = json_decode(base64_decode(strtr(explode('.', $logoutToken)[1], '-_', '+/')), true);
         unset($claims['sid']);
 
@@ -116,7 +116,7 @@ final class LogoutTest extends TestCase
 
     public function test_backchannel_logout_sans_csrf_ni_session(): void
     {
-        // Route appelée par le serveur Keycloak : pas de cookie, pas de jeton CSRF
+        // Route called by the Keycloak server: no cookie, no CSRF token
         $this->withoutMiddleware([])
             ->call('POST', '/sso/backchannel-logout', ['logout_token' => FakeKeycloak::logoutToken()])
             ->assertOk();

@@ -4,11 +4,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Serveur Keycloak
+    | Keycloak server
     |--------------------------------------------------------------------------
     |
-    | base_url : adresse du serveur, sans /realms (ex : https://sso.example.org).
-    | Pour Keycloak < 17, ajoutez /auth (ex : https://sso.example.org/auth).
+    | base_url: address of the server, without /realms (example: https://sso.example.org).
+    | For Keycloak < 17, add /auth (example: https://sso.example.org/auth).
     |
     */
 
@@ -20,22 +20,22 @@ return [
 
     'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
 
-    // Adresse de retour après la connexion Keycloak.
-    // null = la route du paquet : {APP_URL}/sso/callback
+    // Return address after the Keycloak login.
+    // null = the route of the package: {APP_URL}/sso/callback
     'redirect_uri' => env('KEYCLOAK_REDIRECT_URI'),
 
     'scopes' => ['openid', 'profile', 'email'],
 
     /*
     |--------------------------------------------------------------------------
-    | Application front (SPA)
+    | Frontend application (SPA)
     |--------------------------------------------------------------------------
     |
-    | callback_url : page du front qui reçoit ?code=... après la connexion et
-    | l'échange contre un jeton Sanctum (ou ?error=... en cas d'échec).
+    | callback_url: frontend page that receives ?code=... after the login, to
+    | exchange it for a Sanctum token (or ?error=... when the login fails).
     |
-    | post_logout_redirect_uri : page affichée après la déconnexion Keycloak.
-    | Elle doit être autorisée dans le client Keycloak ("Valid post logout redirect URIs").
+    | post_logout_redirect_uri: page shown after the Keycloak logout.
+    | It must be allowed in the Keycloak client ("Valid post logout redirect URIs").
     |
     */
 
@@ -46,19 +46,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Utilisateurs
+    | Users
     |--------------------------------------------------------------------------
     |
-    | identifier : colonne de la table users qui relie l'utilisateur à Keycloak,
-    | et claim Keycloak correspondant. Exemples :
-    |   ['column' => 'keycloak_id', 'claim' => 'sub']  (identifiant Keycloak, recommandé)
+    | identifier: column of the users table that links the user to Keycloak,
+    | and the matching Keycloak claim. Examples:
+    |   ['column' => 'keycloak_id', 'claim' => 'sub']  (Keycloak id, recommended)
     |   ['column' => 'email', 'claim' => 'email']
     |   ['column' => 'username', 'claim' => 'preferred_username']
     |
-    | auto_create : créer l'utilisateur à sa première connexion. Si false,
-    | seuls les utilisateurs déjà présents en base peuvent se connecter.
+    | auto_create: create the user on the first login. If false,
+    | only users already present in the database can log in.
     |
-    | attributes : colonnes mises à jour à chaque connexion => claim Keycloak.
+    | attributes: columns updated on every login => Keycloak claim.
     |
     */
 
@@ -77,23 +77,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Rôles
+    | Roles
     |--------------------------------------------------------------------------
     |
-    | source : où lire les rôles dans le jeton Keycloak.
-    |   'realm'  = rôles du realm (realm_access.roles)
-    |   'client' = rôles du client (resource_access.{client}.roles)
-    |   'both'   = les deux
+    | source: where to read the roles in the Keycloak token.
+    |   'realm'  = roles of the realm (realm_access.roles)
+    |   'client' = roles of the client (resource_access.{client}.roles)
+    |   'both'   = both
     |
-    | map : rôle Keycloak => rôle de l'application. Si la liste est vide, les
-    | rôles Keycloak sont gardés tels quels. Sinon, seuls les rôles de la liste
-    | sont gardés.
+    | map: Keycloak role => application role. If the list is empty, the
+    | Keycloak roles are kept as they are. Otherwise, only the roles of the list
+    | are kept.
     |
-    | default : rôle donné quand l'utilisateur n'a aucun rôle (null = aucun).
+    | default: role given when the user has no role (null = none).
     |
-    | required : refuser la connexion d'un utilisateur sans rôle.
+    | required: refuse the login of a user without any role.
     |
-    | sync : appeler syncKeycloakRoles() sur le modèle User s'il implémente
+    | sync: call syncKeycloakRoles() on the User model if it implements
     | Kaveraa\KeycloakSanctum\Contracts\SyncsKeycloakRoles.
     |
     */
@@ -109,13 +109,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Jeton Sanctum
+    | Sanctum token
     |--------------------------------------------------------------------------
     |
-    | expiration : durée de vie maximale du jeton, en minutes (null = illimitée).
+    | expiration: maximum lifetime of the token, in minutes (null = unlimited).
     |
-    | idle_timeout : déconnexion après ce nombre de minutes sans requête
-    | (null = désactivé). Seuls les jetons créés par ce paquet sont concernés.
+    | idle_timeout: logout after this number of minutes without any request
+    | (null = disabled). Only the tokens created by this package are affected.
     |
     */
 
@@ -125,7 +125,7 @@ return [
         'idle_timeout' => env('KEYCLOAK_SANCTUM_IDLE_TIMEOUT'),
     ],
 
-    // Durée de validité du code à usage unique échangé contre le jeton, en secondes
+    // Lifetime of the one-time code exchanged for the token, in seconds
     'exchange_code_ttl' => 60,
 
     /*
@@ -137,19 +137,19 @@ return [
     'routes' => [
         'enabled' => true,
         'prefix' => 'sso',
-        // Routes de connexion : la session est nécessaire pour vérifier le paramètre "state"
+        // Login routes: the session is needed to check the "state" parameter
         'web_middleware' => ['web'],
-        // Routes appelées par le front en JSON
+        // Routes called by the frontend in JSON
         'api_middleware' => ['api'],
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Cache et HTTP
+    | Cache and HTTP
     |--------------------------------------------------------------------------
     |
-    | La configuration OpenID et les clés publiques de Keycloak sont gardées en
-    | cache. Les clés sont rechargées automatiquement quand Keycloak en change.
+    | The OpenID configuration and the public keys of Keycloak are kept in
+    | the cache. The keys are reloaded automatically when Keycloak changes them.
     |
     */
 
@@ -163,7 +163,7 @@ return [
         'verify' => true,
     ],
 
-    // Tolérance sur l'heure des jetons, en secondes (horloges pas tout à fait synchronisées)
+    // Tolerance on the token times, in seconds (clocks are not always exactly in sync)
     'leeway' => 30,
 
 ];
