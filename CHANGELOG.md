@@ -4,6 +4,13 @@
 
 **EN** All important changes of the package are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Maintenance
+
+- **FR** Tests lancés sur PHP 8.5 et PHPUnit 13 accepté en développement. Aucun changement dans le code.
+  **EN** Tests run on PHP 8.5 and PHPUnit 13 allowed for development. No code change.
+
 ## [1.0.3] - 2026-09-29
 
 ### Maintenance
