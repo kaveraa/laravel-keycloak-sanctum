@@ -65,14 +65,14 @@ class KeycloakSanctumServiceProvider extends ServiceProvider
 
         $this->app->make(Router::class)->aliasMiddleware('keycloak.role', EnsureKeycloakRole::class);
 
-        // Ajoute le pilote "keycloak" à Socialite
+        // Adds the "keycloak" driver to Socialite
         Event::listen(SocialiteWasCalled::class, [KeycloakExtendSocialite::class, 'handle']);
 
         $this->registerIdleTimeout();
     }
 
     /**
-     * Refuse les jetons du paquet restés inutilisés plus longtemps que token.idle_timeout.
+     * Refuses the tokens of the package that stayed unused longer than token.idle_timeout.
      */
     private function registerIdleTimeout(): void
     {

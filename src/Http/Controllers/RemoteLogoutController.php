@@ -15,11 +15,11 @@ use Kaveraa\KeycloakSanctum\KeycloakClient;
 use Kaveraa\KeycloakSanctum\Models\KeycloakSession;
 
 /**
- * POST /sso/backchannel-logout : appelé par Keycloak quand une session se termine
- * (déconnexion depuis une autre application, fin de session, action d'un administrateur).
+ * POST /sso/backchannel-logout: called by Keycloak when a session ends
+ * (logout from another application, session end, action of an administrator).
  *
- * Vérifie le "logout token" selon la norme OpenID Connect Back-Channel Logout 1.0,
- * puis supprime les jetons Sanctum de la session.
+ * Checks the "logout token" as described in OpenID Connect Back-Channel Logout 1.0,
+ * then deletes the Sanctum tokens of the session.
  */
 class RemoteLogoutController
 {
@@ -57,7 +57,7 @@ class RemoteLogoutController
             return $this->error("logout_token invalide : {$invalid}.");
         }
 
-        // Un même logout token ne doit pas être rejoué
+        // The same logout token must not be replayed
         if (isset($claims['jti']) && ! Cache::add('keycloak-sanctum:jti:'.hash('sha256', (string) $claims['jti']), true, 600)) {
             return $this->error('logout_token déjà utilisé.');
         }

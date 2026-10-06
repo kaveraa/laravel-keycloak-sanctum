@@ -17,10 +17,10 @@ use Kaveraa\KeycloakSanctum\SocialiteDriver;
 use Kaveraa\KeycloakSanctum\UserResolver;
 
 /**
- * GET /sso/callback : retour de Keycloak après la connexion.
+ * GET /sso/callback: return from Keycloak after the login.
  *
- * Vérifie le jeton, retrouve l'utilisateur, calcule ses rôles, puis redirige vers le front
- * avec un code à usage unique (?code=...), ou avec une erreur (?error=...).
+ * Checks the token, finds the user, computes the roles, then redirects to the frontend
+ * with a one-time code (?code=...), or with an error (?error=...).
  */
 class CallbackController
 {
@@ -32,7 +32,7 @@ class CallbackController
         RoleResolver $roles,
         LoginCodes $codes,
     ): RedirectResponse {
-        // L'utilisateur a annulé, ou Keycloak a refusé la connexion
+        // The user cancelled, or Keycloak refused the login
         if ($request->query('error') !== null) {
             return $this->toFrontend(['error' => 'access_denied']);
         }
@@ -53,12 +53,12 @@ class CallbackController
             return $this->toFrontend(['error' => 'invalid_token']);
         }
 
-        // Le jeton doit avoir été délivré pour ce client
+        // The token must have been issued for this client
         if (($tokenClaims['azp'] ?? null) !== $keycloak->clientId()) {
             return $this->toFrontend(['error' => 'invalid_token']);
         }
 
-        // Informations du profil (userinfo) complétées par le jeton, qui fait foi
+        // Profile information (userinfo) completed by the token, which takes precedence
         $claims = array_merge((array) $keycloakUser->getRaw(), $tokenClaims);
 
         $user = $users->resolve($claims);
@@ -82,7 +82,7 @@ class CallbackController
             'sid' => $tokenClaims['sid'] ?? $tokenClaims['session_state'] ?? null,
             'sub' => (string) $tokenClaims['sub'],
             'roles' => $appRoles,
-            // Réponse complète du serveur Keycloak, fournie par socialiteproviders/manager
+            // Full response of the Keycloak server, provided by socialiteproviders/manager
             'id_token' => property_exists($keycloakUser, 'accessTokenResponseBody')
                 ? ($keycloakUser->accessTokenResponseBody['id_token'] ?? null)
                 : null,

@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
-# Fichiers exclus de l'archive installée par Composer
+# Files left out of the archive that Composer installs
 /.github            export-ignore
 /art                export-ignore
 /tests              export-ignore

@@ -12,13 +12,13 @@ use Kaveraa\KeycloakSanctum\Exceptions\InvalidTokenException;
 use Kaveraa\KeycloakSanctum\Exceptions\KeycloakException;
 
 /**
- * Dialogue avec le serveur Keycloak (OpenID Connect) : configuration, clés publiques,
- * vérification des jetons et adresse de déconnexion.
+ * Talks to the Keycloak server (OpenID Connect): configuration, public keys,
+ * token verification and logout address.
  */
 class KeycloakClient
 {
     /**
-     * @param array<string, mixed> $config configuration keycloak-sanctum
+     * @param array<string, mixed> $config keycloak-sanctum configuration
      */
     public function __construct(
         private readonly array $config,
@@ -27,7 +27,7 @@ class KeycloakClient
     }
 
     /**
-     * Adresse du realm, qui est aussi l'émetteur ("iss") des jetons.
+     * Address of the realm, which is also the issuer ("iss") of the tokens.
      */
     public function issuer(): string
     {
@@ -47,7 +47,7 @@ class KeycloakClient
     }
 
     /**
-     * Configuration OpenID du realm (.well-known/openid-configuration), gardée en cache.
+     * OpenID configuration of the realm (.well-known/openid-configuration), kept in the cache.
      *
      * @return array<string, mixed>
      */
@@ -59,8 +59,8 @@ class KeycloakClient
     }
 
     /**
-     * Vérifie un jeton signé par Keycloak (signature, dates, émetteur) et retourne son contenu.
-     * Si le jeton utilise une clé inconnue, les clés sont rechargées une fois (rotation des clés).
+     * Checks a token signed by Keycloak (signature, dates, issuer) and returns its content.
+     * If the token uses an unknown key, the keys are reloaded once (key rotation).
      *
      * @return array<string, mixed>
      *
@@ -71,8 +71,8 @@ class KeycloakClient
         $kid = $this->keyId($jwt);
         $keys = $this->signingKeys();
 
-        // Clé inconnue : Keycloak a peut-être changé de clés. Le rechargement est limité à une fois
-        // par minute, pour qu'un envoi de faux jetons ne fasse pas interroger Keycloak en boucle.
+        // Unknown key: Keycloak may have changed its keys. The reload is limited to once
+        // per minute, so that sending fake tokens does not make us query Keycloak in a loop.
         if ($kid !== null && ! array_key_exists($kid, $keys) && $this->cache->add($this->cacheKey('jwks-refresh'), true, 60)) {
             $keys = $this->signingKeys(refresh: true);
         }
@@ -96,7 +96,7 @@ class KeycloakClient
     }
 
     /**
-     * Adresse de déconnexion Keycloak (RP-initiated logout), ou null si Keycloak ne la fournit pas.
+     * Keycloak logout address (RP-initiated logout), or null if Keycloak does not provide one.
      */
     public function logoutUrl(?string $idToken, ?string $postLogoutRedirectUri): ?string
     {
@@ -115,7 +115,7 @@ class KeycloakClient
     }
 
     /**
-     * Clés publiques de signature du realm, indexées par identifiant (kid).
+     * Public signing keys of the realm, indexed by key id (kid).
      *
      * @return array<string, \Firebase\JWT\Key>
      */
@@ -135,7 +135,7 @@ class KeycloakClient
             return $this->getJson($uri);
         });
 
-        // Keycloak publie aussi des clés de chiffrement (use = enc) : seules les clés de signature servent ici
+        // Keycloak also publishes encryption keys (use = enc): only the signing keys are used here
         $jwks['keys'] = array_values(array_filter(
             (array) ($jwks['keys'] ?? []),
             fn ($key) => is_array($key) && ($key['use'] ?? 'sig') === 'sig',

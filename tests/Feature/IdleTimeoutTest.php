@@ -14,7 +14,7 @@ final class IdleTimeoutTest extends TestCase
     {
         parent::defineEnvironment($app);
 
-        // Doit être défini avant le démarrage du ServiceProvider
+        // Must be set before the ServiceProvider boots
         $app['config']->set('keycloak-sanctum.token.idle_timeout', 30);
         $app['config']->set('keycloak-sanctum.users.auto_create', true);
     }
