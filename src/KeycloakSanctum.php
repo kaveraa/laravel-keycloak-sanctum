@@ -11,7 +11,7 @@ use Kaveraa\KeycloakSanctum\Models\KeycloakSession;
 use Laravel\Sanctum\PersonalAccessToken;
 
 /**
- * Points d'extension du paquet, à appeler dans le boot() d'un ServiceProvider de l'application.
+ * Extension points of the package, to call in the boot() of a ServiceProvider of the application.
  *
  *     KeycloakSanctum::resolveUsersUsing(fn (array $claims) => User::firstWhere('email', $claims['email']));
  *     KeycloakSanctum::mapRolesUsing(fn (array $roles, array $claims) => ...);
@@ -29,8 +29,8 @@ final class KeycloakSanctum
     public static $userPayloadCallback = null;
 
     /**
-     * Remplace la recherche/création de l'utilisateur local.
-     * Le callback reçoit les informations Keycloak et retourne un modèle, ou null pour refuser la connexion.
+     * Replaces the lookup/creation of the local user.
+     * The callback receives the Keycloak information and returns a model, or null to refuse the login.
      *
      * @param callable(array<string, mixed>): ?Model $callback
      */
@@ -40,7 +40,7 @@ final class KeycloakSanctum
     }
 
     /**
-     * Remplace la transformation des rôles Keycloak en rôles de l'application.
+     * Replaces the mapping of Keycloak roles to application roles.
      *
      * @param callable(list<string>, array<string, mixed>): array<int, string> $callback
      */
@@ -50,7 +50,7 @@ final class KeycloakSanctum
     }
 
     /**
-     * Remplace les données de l'utilisateur renvoyées au front (routes token et user).
+     * Replaces the user data returned to the frontend (token and user routes).
      *
      * @param callable(Authenticatable, list<string>): array<string, mixed> $callback
      */
@@ -60,7 +60,7 @@ final class KeycloakSanctum
     }
 
     /**
-     * Rôles de l'utilisateur connecté, lus sur son jeton Sanctum actuel.
+     * Roles of the logged-in user, read from the current Sanctum token.
      *
      * @return list<string>
      */
@@ -83,7 +83,7 @@ final class KeycloakSanctum
     }
 
     /**
-     * L'utilisateur connecté a-t-il au moins un des rôles donnés ?
+     * Does the logged-in user have at least one of the given roles?
      */
     public static function hasAnyRole(string ...$roles): bool
     {
@@ -91,7 +91,7 @@ final class KeycloakSanctum
     }
 
     /**
-     * Données de l'utilisateur envoyées au front.
+     * User data sent to the frontend.
      *
      * @param list<string> $roles
      *
@@ -109,7 +109,7 @@ final class KeycloakSanctum
     }
 
     /**
-     * Revient au comportement par défaut (utile dans les tests).
+     * Goes back to the default behavior (useful in tests).
      */
     public static function reset(): void
     {

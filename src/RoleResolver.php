@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Kaveraa\KeycloakSanctum;
 
 /**
- * Transforme les rôles lus dans le jeton Keycloak en rôles de l'application.
+ * Maps the roles read from the Keycloak token to application roles.
  */
 class RoleResolver
 {
     /**
-     * @param array<string, mixed> $config configuration keycloak-sanctum.roles
+     * @param array<string, mixed> $config keycloak-sanctum.roles configuration
      */
     public function __construct(
         private readonly array $config,
@@ -19,9 +19,9 @@ class RoleResolver
     }
 
     /**
-     * @param array<string, mixed> $claims contenu du jeton d'accès Keycloak
+     * @param array<string, mixed> $claims content of the Keycloak access token
      *
-     * @return list<string> rôles de l'application, sans doublon
+     * @return list<string> application roles, without duplicates
      */
     public function map(array $claims): array
     {
@@ -50,7 +50,7 @@ class RoleResolver
     }
 
     /**
-     * Rôles bruts du jeton, selon la source configurée (realm, client ou les deux).
+     * Raw roles of the token, from the configured source (realm, client or both).
      *
      * @param array<string, mixed> $claims
      *

@@ -12,8 +12,8 @@ use Kaveraa\KeycloakSanctum\Models\KeycloakSession;
 use Laravel\Sanctum\PersonalAccessToken;
 
 /**
- * POST /sso/logout : supprime le jeton Sanctum actuel et retourne l'adresse de déconnexion
- * Keycloak, vers laquelle le front redirige pour fermer aussi la session SSO.
+ * POST /sso/logout: deletes the current Sanctum token and returns the Keycloak logout
+ * address, where the frontend redirects to also close the SSO session.
  */
 class LogoutController
 {
