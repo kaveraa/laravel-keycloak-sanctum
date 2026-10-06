@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kaveraa\KeycloakSanctum\Events;
 
 /**
- * Keycloak a demandé la fin d'une session (back-channel logout) : les jetons liés ont été supprimés.
+ * Keycloak asked to end a session (back-channel logout): the linked tokens have been deleted.
  */
 final class KeycloakLogout
 {

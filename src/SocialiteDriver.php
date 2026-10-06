@@ -8,12 +8,12 @@ use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 
 /**
- * Prépare le pilote Socialite "keycloak" à partir de la configuration du paquet.
+ * Prepares the "keycloak" Socialite driver from the configuration of the package.
  */
 class SocialiteDriver
 {
     /**
-     * @param array<string, mixed> $config configuration keycloak-sanctum
+     * @param array<string, mixed> $config keycloak-sanctum configuration
      */
     public function __construct(private readonly array $config)
     {
@@ -21,7 +21,7 @@ class SocialiteDriver
 
     public function make(): Provider
     {
-        // Les valeurs déjà présentes dans config/services.php restent prioritaires
+        // Values already present in config/services.php keep priority
         $services = (array) config('services.keycloak', []);
         config(['services.keycloak' => $services + [
             'client_id' => $this->config['client_id'] ?? null,

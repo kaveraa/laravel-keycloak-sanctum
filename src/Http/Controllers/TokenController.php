@@ -13,7 +13,7 @@ use Kaveraa\KeycloakSanctum\Models\KeycloakSession;
 use Kaveraa\KeycloakSanctum\UserResolver;
 
 /**
- * POST /sso/token : échange le code à usage unique contre un jeton Sanctum.
+ * POST /sso/token: exchanges the one-time code for a Sanctum token.
  */
 class TokenController
 {

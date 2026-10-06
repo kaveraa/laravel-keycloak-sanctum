@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Sanctum\PersonalAccessToken;
 
 /**
- * Lien entre un jeton Sanctum et la session Keycloak qui l'a créé.
- * Sert à la déconnexion depuis Keycloak (sid / sub) et à la lecture des rôles.
+ * Link between a Sanctum token and the Keycloak session that created it.
+ * Used for the logout from Keycloak (sid / sub) and to read the roles.
  *
  * @property int $id
  * @property int $personal_access_token_id
- * @property string|null $sid identifiant de session Keycloak
- * @property string $sub identifiant de l'utilisateur dans Keycloak
- * @property list<string> $roles rôles de l'application
- * @property string|null $id_token jeton d'identité, chiffré en base
+ * @property string|null $sid Keycloak session id
+ * @property string $sub id of the user in Keycloak
+ * @property list<string> $roles application roles
+ * @property string|null $id_token identity token, encrypted in the database
  */
 class KeycloakSession extends Model
 {
@@ -44,9 +44,9 @@ class KeycloakSession extends Model
     }
 
     /**
-     * Supprime les jetons Sanctum (et leurs sessions) correspondant à une session ou un utilisateur Keycloak.
+     * Deletes the Sanctum tokens (and their sessions) that match a Keycloak session or user.
      *
-     * @return int nombre de jetons supprimés
+     * @return int number of deleted tokens
      */
     public static function revoke(?string $sid, ?string $sub): int
     {

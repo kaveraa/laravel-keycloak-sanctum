@@ -8,21 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 use Kaveraa\KeycloakSanctum\Exceptions\KeycloakException;
 
 /**
- * Retrouve (et si besoin crée) l'utilisateur local correspondant à un utilisateur Keycloak.
+ * Finds (and creates if needed) the local user that matches a Keycloak user.
  */
 class UserResolver
 {
     /**
-     * @param array<string, mixed> $config configuration keycloak-sanctum.users
+     * @param array<string, mixed> $config keycloak-sanctum.users configuration
      */
     public function __construct(private readonly array $config)
     {
     }
 
     /**
-     * @param array<string, mixed> $claims informations Keycloak (userinfo + jeton d'accès)
+     * @param array<string, mixed> $claims Keycloak information (userinfo + access token)
      *
-     * @return Model|null null si l'utilisateur n'existe pas et que la création automatique est désactivée
+     * @return Model|null null if the user does not exist and automatic creation is disabled
      */
     public function resolve(array $claims): ?Model
     {
@@ -60,7 +60,7 @@ class UserResolver
     }
 
     /**
-     * Retrouve un utilisateur par sa clé primaire (utilisé lors de l'échange du code).
+     * Finds a user by primary key (used during the code exchange).
      */
     public function find(mixed $id): ?Model
     {

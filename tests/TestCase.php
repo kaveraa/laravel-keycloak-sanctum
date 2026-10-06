@@ -79,9 +79,9 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * Simule le retour de Keycloak dans Socialite avec un jeton d'accès signé.
+     * Simulates the return from Keycloak in Socialite with a signed access token.
      *
-     * @param array<string, mixed> $raw informations du profil (userinfo)
+     * @param array<string, mixed> $raw profile information (userinfo)
      */
     protected function fakeSocialiteUser(string $accessToken, array $raw = [], ?string $idToken = 'id-token-xyz'): void
     {
@@ -94,12 +94,12 @@ abstract class TestCase extends Orchestra
         $provider->shouldReceive('scopes')->andReturnSelf();
         $provider->shouldReceive('user')->andReturn($user);
 
-        // once() : un second appel de fakeSocialiteUser() prend le relais pour la connexion suivante
+        // once(): a second call to fakeSocialiteUser() takes over for the next login
         Socialite::shouldReceive('driver')->with('keycloak')->once()->andReturn($provider);
     }
 
     /**
-     * Parcours complet : retour Keycloak puis échange du code. Retourne la réponse JSON de /sso/token.
+     * Full flow: return from Keycloak, then code exchange. Returns the JSON response of /sso/token.
      *
      * @param array<string, mixed> $claims
      */

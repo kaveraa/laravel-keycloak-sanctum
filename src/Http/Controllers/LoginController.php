@@ -8,7 +8,7 @@ use Kaveraa\KeycloakSanctum\SocialiteDriver;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * GET /sso/login : redirige vers la page de connexion Keycloak.
+ * GET /sso/login: redirects to the Keycloak login page.
  */
 class LoginController
 {

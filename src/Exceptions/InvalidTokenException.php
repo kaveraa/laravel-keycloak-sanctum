@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kaveraa\KeycloakSanctum\Exceptions;
 
 /**
- * Jeton Keycloak refusé : signature, dates, émetteur ou contenu invalides.
+ * Keycloak token refused: invalid signature, dates, issuer or content.
  */
 class InvalidTokenException extends KeycloakException
 {
