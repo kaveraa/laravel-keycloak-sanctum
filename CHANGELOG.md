@@ -6,10 +6,19 @@
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-10-08
+
+### Documentation
+
+- **FR** L'URL de la bannière du README pointe sur un commit précis, plus sur la branche `main`, pour que les sites qui affichent le README montrent toujours la bannière en cours. Le guide de contribution explique la marche à suivre quand la bannière change.
+  **EN** The README banner URL now points to a fixed commit instead of the `main` branch, so sites that show the README always display the current banner. The contributing guide explains what to do when the banner changes.
+
 ### Maintenance
 
 - **FR** Tests lancés sur PHP 8.5 et PHPUnit 13 accepté en développement. Aucun changement dans le code.
   **EN** Tests run on PHP 8.5 and PHPUnit 13 allowed for development. No code change.
+- **FR** Les commentaires du code sont réécrits en anglais simple. Aucun changement dans le code.
+  **EN** Code comments are rewritten in simple English. No code change.
 
 ## [1.0.3] - 2026-09-29
 
